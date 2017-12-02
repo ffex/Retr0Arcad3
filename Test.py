@@ -26,7 +26,7 @@ class Test:
 
     def addEvent(self):
 
-        GPIO.add_event_detect(self._testPin, GPIO.BOTH, callback=keyPress,bouncetime=50) # wait for falling
+        GPIO.add_event_detect(self._testPin, GPIO.BOTH, callback=self.keyPress,bouncetime=50) # wait for falling
     #        GPIO.add_event_detect(pin, GPIO.RISING, callback=keyUp,bouncetime=250) # wait for falling
     #    while True:
     #        pass   # Don't do anything
