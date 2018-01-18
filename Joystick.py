@@ -6,6 +6,7 @@ pins={}
 class joystick:
     def __init__(self,ppins,keys,name):
         self._name=name
+        self._pins={}
         for x in range(len(ppins)):
             self._pins[ppins[x]]=keys[x]
         self.setup()

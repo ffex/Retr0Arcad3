@@ -8,7 +8,7 @@ def loop():
 
 
 if __name__ == '__main__':  # Program start from here
-    test=Test(11)
+    test=Test(15)
 
     try:
         loop()
