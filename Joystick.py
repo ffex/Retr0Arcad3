@@ -12,12 +12,13 @@ class joystick:
     def __init__(self,ppins,keys,name):
         self._name=name
         self._pins={}
+        self.ui = ""
         for x in range(len(ppins)):
             self._pins[ppins[x]]=keys[x]
         self.setup()
-        self.addEvents()
         os.system("sudo modprobe uinput")
         self.ui = UInput({e.EV_KEY:self._pins.values()},name="retrogame",bustype=e.BUS_USB)
+        self.addEvents()
 
 
     def setup(self):
@@ -54,14 +55,16 @@ class joystickMCP:
     def __init__(self, ppins, keys, name):
         self._name = name
         self._pins = {}
+        self._prevStatus = {}
+        self.ui=""
         self._mcp= MCP23017()
         self.active=True
         for x in range(len(ppins)):
             self._pins[ppins[x]] = keys[x]
             self._prevStatus[ppins[x]]=True
-        self.setup()
         os.system("sudo modprobe uinput")
         self.ui = UInput({e.EV_KEY:self._pins.values()},name="retrogame",bustype=e.BUS_USB)
+        self.setup()
         self.loop()
 
 
