@@ -33,14 +33,14 @@ class joystick:
         #ui.syn()
         if GPIO.input(ev)==GPIO.LOW:
             #print('%s: Down: %s - %s' % (self._name,ev,self._pins[ev]))
-            self.ui.write(e.EV_KEY,self._pins[ev],2)
-            #TODO pyautogui.keyDown(self._pins[ev])
-            self.ui.syn()
+            self.ui.write(e.EV_KEY,self._pins[ev],1)
+        
+
         else:
             #print('%s: Up: %s - %s' % (self._name,ev,self._pins[ev]))
             self.ui.write(e.EV_KEY,self._pins[ev],0)
-            #TODO pyautogui.keyUp(self._pins[ev])
-            self.ui.syn()
+
+        self.ui.syn()
 
     def addEvents(self):
         for pin in self._pins.keys():
@@ -82,14 +82,12 @@ class joystickMCP:
         if self._mcp.input(ev) != self._prevStatus[ev]:
             if self._mcp.input(ev) == GPIO.LOW:
               #  print('Down: Push!')
-                self.ui.write(e.EV_KEY, self._pins[ev], 2)
-                self.ui.syn()
+                self.ui.write(e.EV_KEY, self._pins[ev], 1)
             else:
                # print('Up: Push!')
                 self.ui.write(e.EV_KEY, self._pins[ev], 0)
-                self.ui.syn()
             self._prevStatus[ev] = self._mcp.input(ev)
-            self.ui.syn()
+        self.ui.syn()
 
 
     def loop(self):
