@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import RPi.GPIO as GPIO
-import pyautogui
+from Adafruit_GPIO.MCP230xx import MCP23017
+#import pyautogui
 
-pins={}
+#pins={}
 class joystick:
     def __init__(self,ppins,keys,name):
         self._name=name
@@ -22,10 +23,10 @@ class joystick:
     def keyPress(self,ev=None):
         if GPIO.input(ev)==GPIO.LOW:
             print('%s: Down: %s - %s' % (self._name,ev,self._pins[ev]))
-            pyautogui.keyDown(self._pins[ev])
+            #TODO pyautogui.keyDown(self._pins[ev])
         else:
             print('%s: Up: %s - %s' % (self._name,ev,self._pins[ev]))
-            pyautogui.keyUp(self._pins[ev])
+            #TODO pyautogui.keyUp(self._pins[ev])
 
 
     def addEvents(self):
@@ -37,10 +38,45 @@ class joystick:
     def destroy(self):
     	GPIO.cleanup()                     # Release resource
 
-    if __name__ == '__main__':     # Program start from here
-        init()
-        setup()
-        try:
-            loop()
-        except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child program destroy() will be  executed.
-            destroy()
+class joystickMCP:
+    def __init__(self, ppins, keys, name):
+        self._name = name
+        self._pins = {}
+        self._mcp= MCP23017()
+        self.active=True
+        for x in range(len(ppins)):
+            self._pins[ppins[x]] = keys[x]
+            self._prevStatus[ppins[x]]=True
+        self.setup()
+        self.loop()
+
+
+    def setup(self):
+        #GPIO.setmode(GPIO.BOARD)  # Numbers GPIOs by physical location
+        #self._mcp = MCP23017()
+        #self._mcp.setup(8,1)
+        #self._mcp.pullup(8,True)
+
+        for pin in self._pins.keys():
+            self._mcp.setup(pin, GPIO.IN)#tutti i pin in input
+            self._mcp.pullup(pin,True)#lì setto a 3.3v
+
+    def checkKeyPress(self, ev=None):
+        if self._mcp.input(ev) != self._prevStatus[ev]:
+            if self._mcp.input(ev) == GPIO.LOW:
+                print('Down: Push!')
+            else:
+                print('Up: Push!')
+            self._prevStatus[ev] = self._mcp.input(ev)
+
+
+    def loop(self):
+        while self.active:
+            for pin in self._pins.keys():
+                self.checkKeyPress(pin)
+
+
+    def destroy(self):
+        self.active=False
+
+
