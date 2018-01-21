@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 import RPi.GPIO as GPIO
+import os
 from Adafruit_GPIO.MCP230xx import MCP23017
+from evdev import uinput, UInput, ecodes as e
 #import pyautogui
+# See /usr/include/linux/input.h for keycode names
+#adafruit-retrogame
 
 #pins={}
 class joystick:
@@ -12,6 +16,8 @@ class joystick:
             self._pins[ppins[x]]=keys[x]
         self.setup()
         self.addEvents()
+        os.system("sudo modprobe uinput")
+        self.ui = UInput({e.EV_KEY,self._pins.values()},name="retrogame",bustype=e.BUS_USB)
 
 
     def setup(self):
@@ -21,13 +27,19 @@ class joystick:
 
 
     def keyPress(self,ev=None):
+        #ui.write(e.EV_KEY, key, state)
+
+        #ui.syn()
         if GPIO.input(ev)==GPIO.LOW:
             print('%s: Down: %s - %s' % (self._name,ev,self._pins[ev]))
+            self.ui.write(e.EV_KEY,self._pins[ev],0)
             #TODO pyautogui.keyDown(self._pins[ev])
+
         else:
             print('%s: Up: %s - %s' % (self._name,ev,self._pins[ev]))
+            self.ui.write(e.EV_KEY,self._pins[ev],0)
             #TODO pyautogui.keyUp(self._pins[ev])
-
+        self.ui.syn()
 
     def addEvents(self):
         for pin in self._pins.keys():
