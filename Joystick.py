@@ -17,7 +17,7 @@ class joystick:
         self.setup()
         self.addEvents()
         os.system("sudo modprobe uinput")
-        self.ui = UInput({e.EV_KEY,self._pins.values()},name="retrogame",bustype=e.BUS_USB)
+        self.ui = UInput({e.EV_KEY:self._pins.values()},name="retrogame",bustype=e.BUS_USB)
 
 
     def setup(self):
@@ -32,7 +32,7 @@ class joystick:
         #ui.syn()
         if GPIO.input(ev)==GPIO.LOW:
             print('%s: Down: %s - %s' % (self._name,ev,self._pins[ev]))
-            self.ui.write(e.EV_KEY,self._pins[ev],0)
+            self.ui.write(e.EV_KEY,self._pins[ev],1)
             #TODO pyautogui.keyDown(self._pins[ev])
 
         else:
@@ -60,6 +60,8 @@ class joystickMCP:
             self._pins[ppins[x]] = keys[x]
             self._prevStatus[ppins[x]]=True
         self.setup()
+        os.system("sudo modprobe uinput")
+        self.ui = UInput({e.EV_KEY:self._pins.values()},name="retrogame",bustype=e.BUS_USB)
         self.loop()
 
 
@@ -77,8 +79,10 @@ class joystickMCP:
         if self._mcp.input(ev) != self._prevStatus[ev]:
             if self._mcp.input(ev) == GPIO.LOW:
                 print('Down: Push!')
+                self.ui.write(e.EV_KEY, self._pins[ev], 1)
             else:
                 print('Up: Push!')
+                self.ui.write(e.EV_KEY, self._pins[ev], 0)
             self._prevStatus[ev] = self._mcp.input(ev)
 
 
