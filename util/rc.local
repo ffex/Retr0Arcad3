@@ -18,5 +18,5 @@ if [ "$_IP" ]; then
 fi
 python3 /home/pi/Retr0Arcad3/main.py &
 python3 /home/pi/Retr0Arcad3/main2.py &
-python3 /home/pi/Retr0Arcad3/mainMCP.py &
+#python3 /home/pi/Retr0Arcad3/mainMCP.py &
 exit 0
