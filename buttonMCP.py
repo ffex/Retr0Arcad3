@@ -18,7 +18,10 @@ class joystickMCP:
         os.system("sudo modprobe uinput")
         self.ui = UInput({e.EV_KEY:self._pins.values()},name="retrogame",bustype=e.BUS_USB)
         self.setup()
-        self.loop()
+        try:
+            self.loop()
+        except KeyboardInterrupt:
+            self.destroy()
 
 
     def setup(self):
