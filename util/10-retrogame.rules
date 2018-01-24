@@ -1,0 +1,1 @@
+SUBSYSTEM=="input", ATTRS{name}=="retrogame", ENV{D_INPUT_KEYBOARD}="1"

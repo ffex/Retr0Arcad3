@@ -1,0 +1,3 @@
+/etc/udev/rules.d/ x le regole
+
+/etc/rc.local
