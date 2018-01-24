@@ -17,7 +17,7 @@ class joystick:
             self._pins[ppins[x]]=keys[x]
         self.setup()
         os.system("sudo modprobe uinput")
-        self.ui = UInput({e.EV_KEY:self._pins.values()},name="retrogame",bustype=e.BUS_USB)
+        self.ui = UInput(name="fex",vendor=9999,product=8888)
         self.addEvents()
 
 
