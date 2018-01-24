@@ -20,10 +20,8 @@ class joystick:
         self.setup()
         os.system("sudo modprobe uinput")
         self.ui = UInput(name=name,vendor=9999,product=8888)
-        try:
-            self.loop()
-        except KeyboardInterrupt:
-            self.destroy()
+        self.loop()
+
 
 
     def setup(self):
