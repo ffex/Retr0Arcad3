@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import RPi.GPIO as GPIO
 import os
+import time
 from Adafruit_GPIO.MCP230xx import MCP23017
 from evdev import uinput, UInput, ecodes as e
 #import pyautogui
@@ -11,12 +12,13 @@ from evdev import uinput, UInput, ecodes as e
 class joystick:
     def __init__(self,ppins,keys,name):
         self._name=name
+        self.active=True
         self._pins={}
         self._prevStatus = {}
         self.ui = ""
         for x in range(len(ppins)):
             self._pins[ppins[x]]=keys[x]
-            self._prevStatus[ppins[x]]=True
+            self._prevStatus[ppins[x]]=GPIO.HIGH
         self.setup()
         os.system("sudo modprobe uinput")
         self.ui = UInput(name=name,vendor=9999,product=8888)
@@ -32,7 +34,7 @@ class joystick:
 
     def keyPress(self,ev=None):
         #ui.write(e.EV_KEY, key, state)
-
+        #print("hola")
         if GPIO.input(ev) != self._prevStatus[ev]:
             if GPIO.input(ev)==GPIO.LOW:
                 #print('%s: Down: %s - %s' % (self._name,ev,self._pins[ev]))
@@ -40,19 +42,20 @@ class joystick:
             else:
                 #print('%s: Up: %s - %s' % (self._name,ev,self._pins[ev]))
                 self.ui.write(e.EV_KEY,self._pins[ev],0)
-            self._prevStatus[ev] = self._mcp.input(ev)
+            self._prevStatus[ev] = GPIO.input(ev)
 
         self.ui.syn()
 
     def loop(self):
-        for pin in self._pins.keys():
-            self.keyPress(pin)
+        while self.active:
+            for pin in self._pins.keys():
+                self.keyPress(pin)
     #        GPIO.add_event_detect(pin, GPIO.RISING, callback=keyUp,bouncetime=250) # wait for falling
 
 
     def destroy(self):
-    	GPIO.cleanup()                     # Release resource
-
-
+        self.active=False
+        time.sleep(0.5)
+        GPIO.cleanup()
 
 
