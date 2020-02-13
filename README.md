@@ -1,2 +1,2 @@
 # Retr0Arcad3
-GPIO controller setup for Arcade Joystick
+GPIO controller setup for Arcade Joystick. Enjoy!
